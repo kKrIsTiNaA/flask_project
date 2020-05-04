@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>{{title}}</title>
+    <style>
+      .heading {
+      font-family: 'Ubuntu Condensed', sans-serif;
+      letter-spacing: 2px;
+      position: relative;
+      padding-bottom: 20px;
+      margin: 0 34px 0 30px;
+      font-size: 20px;
+      display: inline-block;
+      transition: color .2s;
+      color: #9d999d;
+      }
+      .footer {
+      font-family: 'Ubuntu Condensed', sans-serif;
+      letter-spacing: 2px;
+      position: relative;
+      padding-bottom: 20px;
+      margin: 0 34px 0 30px;
+      font-size: 17px;
+      transition: color .2s;
+      color: #9d999d;
+      }
+      .menu-main {
+      list-style: none;
+      margin: 40px 0 5px;
+      padding: 25px 0 5px;
+      text-align: center;
+      background: #f0f8ff;
+      }
+      .menu-main li {display: inline-block;}
+      .menu-main li:after {
+      content: "|";
+      color: #9d999d;
+      display: inline-block;
+      vertical-align:top;
+      }
+      .menu-main li:last-child:after {content: none;}
+      .menu-main a {
+      text-decoration: none;
+      font-family: 'Ubuntu Condensed', sans-serif;
+      letter-spacing: 2px;
+      position: relative;
+      padding-bottom: 20px;
+      margin: 0 34px 0 30px;
+      font-size: 17px;
+      text-transform: uppercase;
+      display: inline-block;
+      transition: color .2s;
+      }
+      .menu-main a, .menu-main a:visited {color: #9d999d;}
+      .menu-main a.current, .menu-main a:hover{color: #fa8072;}
+      .menu-main a:before,
+      .menu-main a:after {
+      content: "";
+      position: absolute;
+      height: 4px;
+      top: auto;
+      right: 50%;
+      bottom: -5px;
+      left: 50%;
+      background: #fa8072;
+      transition: .8s;
+      }
+      .menu-main a:hover:before, .menu-main .current:before {left: 0;}
+      .menu-main a:hover:after, .menu-main .current:after {right: 0;}
+      @media (max-width: 550px) {
+      .menu-main {padding-top: 0;}
+      .menu-main li {display: block;}
+      .menu-main li:after {content: none;}
+      .menu-main a {
+      padding: 25px 0 20px;
+      margin: 0 30px;
+     }
+     }
+     {% block style %}{% endblock %}
+  </style>
+</head>
+<body>
+<ul class="menu-main">
+    <nav><p class="heading">PrettyLibrary</p></nav>
+    <li><a href="http://127.0.0.1:8080/">Главная</a></li>
+    <li><a href="http://127.0.0.1:8080/private_area">Личный кабинет</a></li>
+    <li><a href="http://127.0.0.1:8080/news">Новости</a></li>
+</ul>
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+<footer>
+    <ul class="menu-main">
+    <p class="footer">
+        Наш адрес: г.Москва, ул.Пушкина, дом Колотушкина | Наш телефон: +7(800)555-35-35
+    </p>
+    <p class="footer">Есть предложения? Пишите на нашу почту: prettylibrary@pochta.ru</p>
+    </ul>
+</footer>
+</body>
+</html>

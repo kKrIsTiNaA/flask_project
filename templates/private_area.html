@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block style %}
+.button {
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  padding: 15px 30px;
+  margin: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 40px 40px #fa8072 inset, 0 0 0 0 #fa8072;
+  font-family: 'Ubuntu Condensed', sans-serif;
+  font-weight: 16px;
+  letter-spacing: 2px;
+  color: #f0f8ff;
+  transition: .15s ease-in-out;
+}
+.button:hover {
+  box-shadow: 0 0 10px 0 #fa8072 inset, 0 0 10px 4px #fa8072;
+  color: #fa8072;
+}
+.contant {
+  list-style: none;
+  margin: 40px 0 5px;
+  padding: 25px 0 5px;
+  text-align: center;
+}
+{% endblock %}
+
+{% block content %}
+    <ul class="contant">
+        <p class="footer">Вы не авторизованы в системе.</p>
+        <a class="button" href="http://127.0.0.1:8080/registration">Зарегистрироваться</a>
+        <a class="button" href="http://127.0.0.1:8080/login">Войти</a>
+    </ul>
+{% endblock %}
