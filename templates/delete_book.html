@@ -1,0 +1,11 @@
+{% extends "base.html %}
+
+{% block content %}
+    <h2>Вы уверены, что хотите удалить {{book.title}}?</h2>
+    <form action="#" method='post'>
+    <button type="submit"> Удалить</button>
+        <a href='{{url_for("show_books")}}'>
+    <button> Отменить</button>
+    </a>
+</form>
+{% endblock %}

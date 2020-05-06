@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+    <div class="sidebar-module sidebar-module-inset">
+        <form class="form-inline-block" method="get" action="search">
+            <div class="form-group">
+                <input type="text" class="form-control" name="query" id="query">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+<br>
+ <h1>Books</h1>
+ <a href="{{url_for('new_book')}}">
+     {% if current_user.is_authenticated %}
+   <button>Добавить книгу</button>
+     {% endif %}
+ </a> <br><br>
+ <ol>
+   {% for book in books %}
+     <a href="{{url_for('get_one_book', book_id = book.id )}}">
+    <li> "{{book.name}}" - {{book.author}} </li>
+     </a>
+     {% if current_user.id == 1 %}
+    <a href="{{url_for('edit_books', book_id = book.id )}}"
+    class="btn btn-warning">
+      Изменить
+    </a>
+    <a href="{{url_for('delete_book', book_id = book.id )}}"
+       class='btn btn-danger' style="margin-left: 10px;">
+      Удалить
+    </a>
+     {% endif %}
+    <br> <br>
+  {% endfor %}
+ </ol>
+{% endblock %}
