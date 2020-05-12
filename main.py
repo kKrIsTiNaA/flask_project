@@ -25,8 +25,9 @@ CHOICES = [('Детские', 'Детские'),
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = True
-WHOOSH_BASE = 'db/books.sqlite'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////db/books.sqlite'
+WHOOSH_BASE = '/db/books.sqlite'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -91,7 +92,8 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired(),
                                                    more_7, has_lat, has_num,
                                                    allowed_data])
-    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
+    password_again = PasswordField('Повторите пароль',
+                                   validators=[DataRequired()])
     name = StringField('Имя пользователя', validators=[DataRequired()])
     categories = MultiCheckboxField(u"Какие жанры книг вы предпочитаете?",
                                     choices=CHOICES)
@@ -121,10 +123,12 @@ def show_books():
         all_books = session.query(books.Books).filter(
             (books.Books.who_added == 1) |
             (books.Books.who_added == current_user.id))
-        return render_template("books.html", books=all_books, user=current_user, title='Все книги')
+        return render_template("books.html", books=all_books,
+                               user=current_user, title='Все книги')
     else:
         all_books = session.query(books.Books).filter(books.Books.who_added == 1)
-        return render_template("books.html", books=all_books, user=current_user, title='Все книги')
+        return render_template("books.html", books=all_books,
+                               user=current_user, title='Все книги')
 
 
 @app.route('/books/<int:book_id>', methods=['GET', 'POST'])
@@ -134,7 +138,8 @@ def get_one_book(book_id):
     book = session.query(books.Books).get(book_id)
     if not book:
         abort(404)
-    return render_template('show_book.html', book=book, title=f'Читать {book.name}')
+    return render_template('show_book.html', book=book,
+                           title=f'Читать {book.name}')
 
 
 @app.route('/books/new/', methods=['GET', 'POST'])
@@ -163,8 +168,9 @@ def edit_books(book_id):
     form = BooksForm()
     if request.method == "GET":
         session = db_session.create_session()
-        all_books = session.query(books.Books).filter(books.Books.id == book_id,
-                                                      books.Books.users == current_user).first()
+        all_books = session.query(books.Books).filter(
+            books.Books.id == book_id,
+            books.Books.users == current_user).first()
         if all_books:
             form.name.data = all_books.name
             form.author.data = all_books.author
@@ -174,8 +180,9 @@ def edit_books(book_id):
             abort(404)
     if form.validate_on_submit():
         session = db_session.create_session()
-        all_books = session.query(books.Books).filter(books.Books.id == book_id,
-                                                      books.Books.users == current_user).first()
+        all_books = session.query(books.Books).filter(
+            books.Books.id == book_id,
+            books.Books.users == current_user).first()
         if all_books:
             all_books.name = form.name.data
             all_books.author = form.author.data
@@ -212,8 +219,8 @@ def register():
                                    form=form,
                                    message="Пароли не совпадают")
         sessions = db_session.create_session()
-        if sessions.query(users.User).filter(users.User.email == form.email.data). \
-                first():
+        if sessions.query(users.User).filter(
+                users.User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
@@ -234,7 +241,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        user = session.query(users.User).filter(users.User.email == form.email.data).first()
+        user = session.query(users.User).filter(
+            users.User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
@@ -242,13 +250,6 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
-
-
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    form = SearchForm()
-    results = books.Books.query.whoosh_search(form.search.data).all()
-    return render_template('books.html', books=results, title="Все книги")
 
 
 @app.route('/logout')

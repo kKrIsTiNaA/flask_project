@@ -7,7 +7,6 @@ from main import app
 
 class Books(SqlAlchemyBase):
     __tablename__ = 'all_books'
-    __searchable__ = ['name', 'author', 'categories']
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     who_added = sqlalchemy.Column(sqlalchemy.Integer,
@@ -17,6 +16,3 @@ class Books(SqlAlchemyBase):
     categories = sqlalchemy.Column(sqlalchemy.String)
     content = sqlalchemy.Column(sqlalchemy.String)
     users = orm.relation('User', back_populates='books')
-
-
-wa.whoosh_index(app, Books)
