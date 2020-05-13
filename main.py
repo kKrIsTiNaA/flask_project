@@ -139,8 +139,15 @@ def get_one_book(book_id):
     book = session.query(books.Books).get(book_id)
     if not book:
         abort(404)
-    return render_template('show_book.html', book=book,
-                           title=f'Читать {book.name} | PrettyLibrary')
+    if book_id == 1:
+        return render_template('show_snow_queen.html', book=book,
+                               title=f'Читать "Снежная Королева" | PrettyLibrary')
+    if book_id == 2:
+        return render_template('show_red_hat.html', book=book,
+                               title=f'Читать "Красная шапочка" | PrettyLibrary')
+    if book_id == 3:
+        return render_template('show_black_human.html', book=book,
+                               title=f'Читать "Черный человек" | PrettyLibrary')
 
 
 @app.route('/books/new/', methods=['GET', 'POST'])
@@ -205,7 +212,8 @@ def delete_book(book_id):
         books.Books.id == book_id,
         books.Books.who_added == current_user.id).first()
     if book:
-        return render_template('delete_book.html', book=book)
+        return render_template('delete_book.html', title='Удаление книги | PrettyLibrary',
+                               book=book)
     else:
         abort(404)
     return redirect('/')
@@ -223,7 +231,7 @@ def one_more_delete(book_id):
     all_books = session.query(books.Books).filter(
         books.Books.who_added == 1)
     return render_template('books.html', books=all_books,
-                           title='Все книги | PrettyLibrary')
+                           title='Главная | PrettyLibrary')
 
 
 @app.route('/register', methods=['GET', 'POST'])

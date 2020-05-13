@@ -3,5 +3,5 @@
 {% block content %}
 <center><h5 class="heading">{{ book.author }}</h5></center><br>
 <center><h3 class="heading">{{ book.name }}</h3></center><br>
-<p class="footer">{{ book.content }}</p>
+{% block text %}{% endblock %}
 {% endblock %}
