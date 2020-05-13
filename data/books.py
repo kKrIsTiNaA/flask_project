@@ -1,8 +1,6 @@
 import sqlalchemy
 from sqlalchemy import orm
-import flask_whooshalchemy as wa
 from .db_session import SqlAlchemyBase
-from main import app
 
 
 class Books(SqlAlchemyBase):

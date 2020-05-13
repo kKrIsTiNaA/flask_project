@@ -1,7 +1,6 @@
 from string import ascii_letters
 
-from flask import Flask, render_template, redirect, request, \
-    url_for, abort, make_response, jsonify
+from flask import Flask, render_template, redirect, request, abort, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, \
     logout_user, current_user
 from flask_wtf import FlaskForm
@@ -12,7 +11,6 @@ from wtforms.validators import DataRequired
 from wtforms import Form
 from data import db_session, users, books
 import books_api
-import os
 
 CHOICES = [('Детские', 'Детские'),
            ('Классика', "Классика"),
@@ -34,7 +32,7 @@ login_manager.init_app(app)
 
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found():
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
@@ -67,22 +65,22 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-def more_7(form, field):
+def more_7(field):
     if len(field.data) < 8:
         field.errors = [LengthError.error]
 
 
-def has_lat(form, field):
+def has_lat(field):
     if not any(map(lambda x: x in ascii_letters, list(field.data))):
         field.errors = [LetterError.error]
 
 
-def has_num(form, field):
+def has_num(field):
     if not any(map(lambda x: x.isdigit(), list(field.data))):
         field.errors = [NumeralError.error]
 
 
-def allowed_data(form, field):
+def allowed_data(field):
     if not all(map(lambda x: x.isdigit() or x in ascii_letters or x == '-', list(field.data))):
         field.errors = [SymbolError.error]
 
@@ -92,8 +90,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired(),
                                                    more_7, has_lat, has_num,
                                                    allowed_data])
-    password_again = PasswordField('Повторите пароль',
-                                   validators=[DataRequired()])
+    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
     name = StringField('Имя пользователя', validators=[DataRequired()])
     categories = MultiCheckboxField(u"Какие жанры книг вы предпочитаете?",
                                     choices=CHOICES)
@@ -124,11 +121,16 @@ def show_books():
             (books.Books.who_added == 1) |
             (books.Books.who_added == current_user.id))
         return render_template("books.html", books=all_books,
-                               user=current_user, title='Все книги')
+                               user=current_user, title='Главная | PrettyLibrary')
     else:
         all_books = session.query(books.Books).filter(books.Books.who_added == 1)
         return render_template("books.html", books=all_books,
-                               user=current_user, title='Все книги')
+                               user=current_user, title='Главная | PrettyLibrary')
+
+
+@app.route('/private_area')
+def private_area():
+    return render_template('private_area.html', title="Личный кабинет | PrettyLibrary")
 
 
 @app.route('/books/<int:book_id>', methods=['GET', 'POST'])
@@ -139,7 +141,7 @@ def get_one_book(book_id):
     if not book:
         abort(404)
     return render_template('show_book.html', book=book,
-                           title=f'Читать {book.name}')
+                           title=f'Читать {book.name} | PrettyLibrary')
 
 
 @app.route('/books/new/', methods=['GET', 'POST'])
@@ -158,7 +160,7 @@ def new_book():
         session.merge(current_user)
         session.commit()
         return redirect('/')
-    return render_template('new_book.html', title='Добавление книги',
+    return render_template('new_book.html', title='Добавление книги | PrettyLibrary',
                            form=form)
 
 
@@ -192,8 +194,8 @@ def edit_books(book_id):
             return redirect('/')
         else:
             abort(404)
-    return render_template('edit_book.html', title='Редактирование книги',
-                            form=form)
+    return render_template('edit_book.html', title='Редактирование книги | PrettyLibrary',
+                           form=form)
 
 
 @app.route('/books/delete/<int:book_id>', methods=['GET', 'POST'])
@@ -201,7 +203,7 @@ def edit_books(book_id):
 def delete_book(book_id):
     session = db_session.create_session()
     news = session.query(books.Books).filter(books.Books.id == book_id,
-                                      books.Books.who_added == current_user.id).first()
+                                             books.Books.who_added == current_user.id).first()
     if news:
         session.delete(news)
         session.commit()
@@ -215,25 +217,24 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html', title='Регистрация | PrettyLibrary',
                                    form=form,
                                    message="Пароли не совпадают")
         sessions = db_session.create_session()
         if sessions.query(users.User).filter(
                 users.User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html', title='Регистрация | PrettyLibrary',
                                    form=form,
                                    message="Такой пользователь уже есть")
         categories = ', '.join(x for x in form.categories.data)
-        user = users.User(
-            name=form.name.data,
-            email=form.email.data,
-            categories=categories)
+        user = users.User(name=form.name.data,
+                          email=form.email.data,
+                          categories=categories)
         user.set_password(form.password.data)
         sessions.add(user)
         sessions.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('register.html', title='Регистрация | PrettyLibrary', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -249,7 +250,7 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация | PrettyLibrary', form=form)
 
 
 @app.route('/logout')

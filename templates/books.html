@@ -2,28 +2,28 @@
 
 {% block content %}
 <br>
- <h1>Books</h1>
  <a href="{{url_for('new_book')}}">
      {% if current_user.is_authenticated %}
-   <button>Добавить книгу</button>
+   <a href="/books/new/" class="button">Добавить книгу</a>
      {% endif %}
- </a> <br><br>
- <ol>
+ </a>
+ <br><br> <h1 class="heading">Последние добавления:</h1> <br><br>
+ <ul>
    {% for book in books %}
      <a href="{{url_for('get_one_book', book_id = book.id )}}">
-    <li> "{{book.name}}" - {{book.author}} </li>
+    <li class="footer"> "{{book.name}}" - {{book.author}} </li>
      </a>
      {% if current_user.id == 1 %}
     <a href="{{url_for('edit_books', book_id = book.id )}}"
-    class="btn btn-warning">
+    class="button">
       Изменить
     </a>
     <a href="{{url_for('delete_book', book_id = book.id )}}"
-       class='btn btn-danger' style="margin-left: 10px;">
+       class='button' style="margin-left: 10px;">
       Удалить
     </a>
      {% endif %}
     <br> <br>
   {% endfor %}
- </ol>
+ </ul>
 {% endblock %}

@@ -3,16 +3,16 @@
 {% block content %}
     <form action="{{ url_for('edit_books', book_id = book.id)}}" method="post">
   <div class="form-group">
-    <label for="name">Название:</label>
+    <label for="name" class="footer">Название:</label>
     <input type="text" class="form-control" name="name" value="{{book.name}}"> <br>
-      <label for="author">Автор:</label>
+      <label for="author" class="footer">Автор:</label>
     <input type="text" class="form-control" name="author" value="{{book.author}}"> <br>
-      <label for="categories">Категория:</label>
+      <label for="categories" class="footer">Категория:</label>
     <input type="text" class="form-control" name="categories" value="{{book.categories}}"><br>
-      <label for="content">Содержание:</label>
+      <label for="content" class="footer">Содержание:</label>
     <input type="text" class="form-control" name="content" value="{{book.content}}"><br>
-    <button type="submit"> Обновить</button>
-    <a href='{{ url_for("show_books") }}'>
+    <button type="submit" class="button"> Обновить</button>
+    <a href='{{ url_for("show_books") }}' class="button">
       <button>Отменить</button>
     </a>
   </div>

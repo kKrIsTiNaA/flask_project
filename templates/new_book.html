@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Добавление книги</h1>
+<h1 class="heading">Добавление книги</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
     {{ form.csrf_token }}
-    <p>
+    <p class="footer">
         {{ form.name.label }}<br>
         {{ form.name(class="form-control") }}<br>
         {% for error in form.name.errors %}
-            <p class="alert alert-danger" role="alert">
+            <p role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
-    <p>
+    <p class="footer">
         {{ form.author.label }}<br>
         {{ form.author(class="form-control") }}<br>
         {% for error in form.author.errors %}
@@ -23,7 +23,7 @@
             </p>
         {% endfor %}
     </p>
-    <p>
+    <p class="footer">
         {{ form.categories.label }}<br>
         {{ form.categories(class="form-control") }}<br>
         {% for error in form.categories.errors %}
@@ -32,7 +32,7 @@
             </p>
         {% endfor %}
     </p>
-    <p>
+    <p class="footer">
         {{ form.content.label }}<br>
         {{ form.content(class="form-control") }}<br>
         {% for error in form.content.errors %}
@@ -41,7 +41,7 @@
             </p>
         {% endfor %}
     </p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+    <p class="footer">{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <div class="heading"> {{ message }} </div>
 </form>
 {% endblock %}

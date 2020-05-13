@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul class="contant">
+        {% if current_user.is_authenticated %}
+        <p class="footer">Имя читателя: {{current_user.name}}</p>
+        <p class="footer">email читателя: {{current_user.email}}</p>
+        <p class="footer">Спасибо, что читаете у нас!</p>
+        <a class="button" href="/logout">Выйти</a>
+        {% else %}
+        <p class="footer">Вы не авторизованы в системе.</p>
+        <a class="button" href="/register">Зарегистрироваться</a>
+        <a class="button" href="/login">Войти</a>
+        {% endif %}
+    </ul>
+{% endblock %}
