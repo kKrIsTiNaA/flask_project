@@ -8,9 +8,9 @@ from wtforms import PasswordField, BooleanField, SubmitField, StringField, \
     SelectMultipleField, widgets, TextAreaField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
-from wtforms import Form
-from data import db_session, users, books
+
 import books_api
+from data import db_session, users, books
 
 CHOICES = [('Детские', 'Детские'),
            ('Классика', "Классика"),
@@ -34,6 +34,11 @@ login_manager.init_app(app)
 @app.errorhandler(404)
 def not_found():
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(500)
+def cant_process():
+    return make_response(jsonify({'error': 'Server error'}), 404)
 
 
 class SymbolError(Exception):
@@ -95,12 +100,6 @@ class RegisterForm(FlaskForm):
     categories = MultiCheckboxField(u"Какие жанры книг вы предпочитаете?",
                                     choices=CHOICES)
     submit = SubmitField('Зарегистрироваться')
-
-
-class SearchForm(Form):
-   search = StringField('search', [DataRequired()])
-   submit = SubmitField('Поиск',
-                        render_kw={'class': 'btn btn-success btn-block'})
 
 
 class BooksForm(FlaskForm):
@@ -202,14 +201,29 @@ def edit_books(book_id):
 @login_required
 def delete_book(book_id):
     session = db_session.create_session()
-    news = session.query(books.Books).filter(books.Books.id == book_id,
-                                             books.Books.who_added == current_user.id).first()
-    if news:
-        session.delete(news)
-        session.commit()
+    book = session.query(books.Books).filter(
+        books.Books.id == book_id,
+        books.Books.who_added == current_user.id).first()
+    if book:
+        return render_template('delete_book.html', book=book)
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/books/delete_2/<int:book_id>')
+@login_required
+def one_more_delete(book_id):
+    session = db_session.create_session()
+    book = session.query(books.Books).filter(
+        books.Books.id == book_id,
+        books.Books.who_added == current_user.id).first()
+    session.delete(book)
+    session.commit()
+    all_books = session.query(books.Books).filter(
+        books.Books.who_added == 1)
+    return render_template('books.html', books=all_books,
+                           title='Все книги | PrettyLibrary')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -217,13 +231,15 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация | PrettyLibrary',
+            return render_template('register.html',
+                                   title='Регистрация | PrettyLibrary',
                                    form=form,
                                    message="Пароли не совпадают")
         sessions = db_session.create_session()
         if sessions.query(users.User).filter(
                 users.User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация | PrettyLibrary',
+            return render_template('register.html',
+                                   title='Регистрация | PrettyLibrary',
                                    form=form,
                                    message="Такой пользователь уже есть")
         categories = ', '.join(x for x in form.categories.data)

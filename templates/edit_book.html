@@ -1,20 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form action="{{ url_for('edit_books', book_id = book.id)}}" method="post">
-  <div class="form-group">
-    <label for="name" class="footer">Название:</label>
-    <input type="text" class="form-control" name="name" value="{{book.name}}"> <br>
-      <label for="author" class="footer">Автор:</label>
-    <input type="text" class="form-control" name="author" value="{{book.author}}"> <br>
-      <label for="categories" class="footer">Категория:</label>
-    <input type="text" class="form-control" name="categories" value="{{book.categories}}"><br>
-      <label for="content" class="footer">Содержание:</label>
-    <input type="text" class="form-control" name="content" value="{{book.content}}"><br>
-    <button type="submit" class="button"> Обновить</button>
-    <a href='{{ url_for("show_books") }}' class="button">
-      <button>Отменить</button>
-    </a>
-  </div>
+    <h1>Изменение книги</h1>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.author.label }}<br>
+        {{ form.author(class="form-control") }}<br>
+        {% for error in form.author.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.categories.label }}<br>
+        {{ form.categories(class="form-control") }}<br>
+        {% for error in form.categories.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.content.label }}<br>
+        {{ form.content(class="form-control") }}<br>
+        {% for error in form.content.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
 </form>
 {% endblock %}
