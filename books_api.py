@@ -1,12 +1,13 @@
 import flask
-from data import db_session, books
 from flask import jsonify
+
+from data import db_session, books
 
 blueprint = flask.Blueprint('news_api', __name__,
                             template_folder='templates')
 
 
-@blueprint.route('/api/books/<int:books_id>',  methods=['GET'])
+@blueprint.route('/api/books/<int:books_id>', methods=['GET'])
 def get_one_book(books_id):
     session = db_session.create_session()
     book = session.query(books.Books).get(books_id)
