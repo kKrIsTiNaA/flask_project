@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Вы уверены, что хотите удалить книгу {{ book.title }}?</h2>
-        <a href="{{ url_for('one_more_delete', book_id = book.id) }}">
-    <button type="submit"> Удалить</button>
-            </a>
-        <a href="{{ url_for('show_books') }}">
-    <button> Отменить</button>
-    </a>
+    <ul class="contant">
+        <p class="footer">Вы уверены, что хотите удалить книгу "{{book.name}}" - {{book.author}}?</p>
+            <a href="{{ url_for('one_more_delete', book_id = book.id) }}" class="button">
+                Удалить
+                </a>
+            <a href="{{ url_for('show_books') }}" class="button">Отменить</a>
+    </ul>
 {% endblock %}
